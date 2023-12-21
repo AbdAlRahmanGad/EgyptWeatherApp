@@ -1,8 +1,8 @@
 package com.example.weatherappgui;
 
 //import  .eu.hansolo.medusa.*;
-//import eu.hansolo.tilesfx.Tile;
-//import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,6 +11,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.media.*;
+
 import javafx.stage.Stage;
 
 import javax.swing.*;
@@ -44,7 +46,7 @@ public class HelloApplication extends Application {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
         gridPane.setVgap(10);
-//        TilePane tilePane = new TilePane();
+        TilePane tilePane = new TilePane();
 //        Tile tile = TileBuilder.create().skinType(Tile.SkinType.FLUID)
 //                .prefSize(WIDTH, HEIGHT)
 //                .title("Fire Smoke")
@@ -54,7 +56,7 @@ public class HelloApplication extends Application {
 //                .decimals(0)
 //                .animated(true)
 //                .build();
-////        tilePane.getChildren.add(tile);
+//        tilePane.getChildren.add(tile);
 //        gridPane.add(tile, setRowIndex(), colIndex, 1, 1);
 
 //        Tile
@@ -63,6 +65,15 @@ public class HelloApplication extends Application {
             Text t = new Text();
             t.setText(GetData.getTemp(city.getLatitude(), city.getLongitude()));
             t.setVisible(true);
+//            Tile tile = TileBuilder.create().skinType(Tile.SkinType.FLUID)
+//                    .prefSize(WIDTH, HEIGHT)
+//                    .title("Fire Smoke")
+//                    .text("CPU temp")
+//                    .unit("\u00b0C")
+//                    .threshold(70) // triggers the fire and smoke effect
+//                    .decimals(0)
+//                    .animated(true)
+//                    .build();
             Button b  = new Button(city.getNameInEnglish());
             VBox vb = new VBox();
             vb.getChildren().add(t);

@@ -25,6 +25,17 @@
             <artifactId>javafx-fxml</artifactId>
             <version>19</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>22-ea+16</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-web -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>22-ea+16</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -38,12 +49,42 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>eu.hansolo</groupId>-->
-<!--            <artifactId>Medusa</artifactId>-->
-<!--            <version>16.0.0</version>-->
-
-<!--        </dependency>-->
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>tilesfx</artifactId>
+            <version>17.1.15</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+<!--        TilesFX depends on:-->
+<!--        eu.hansolo:toolbox:17.0.6-->
+<!--        eu.hansolo:toolboxfx:17.0.15-->
+<!--        eu.hansolo.fx:heatmap:17.0.3-->
+<!--        eu.hansolo.fx:countries:17.0.16-->
+        <dependency>
+            <groupId>eu.hansolo.fx</groupId>
+            <artifactId>countries</artifactId>
+            <version>17.0.16</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.hansolo.fx</groupId>
+            <artifactId>heatmap</artifactId>
+            <version>17.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>toolboxfx</artifactId>
+            <version>17.0.15</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>toolbox</artifactId>
+            <version>17.0.6</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>eu.hansolo</groupId>-->
 <!--            <artifactId>toolbox</artifactId>-->
