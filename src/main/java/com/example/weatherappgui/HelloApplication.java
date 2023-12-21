@@ -1,6 +1,7 @@
 package com.example.weatherappgui;
 
 //import  .eu.hansolo.medusa.*;
+import com.fasterxml.jackson.databind.JsonNode;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import javafx.application.Application;
@@ -19,6 +20,8 @@ import javafx.stage.Stage;
 import javax.swing.*;
 import javax.swing.SpringLayout.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,36 +67,37 @@ public class HelloApplication extends Application {
         cities = GetCitiesNames.getCities();
         for (EgyptCity city : cities) {
             Text t = new Text();
+            JsonNode cityJson = GetData.getJson(city.getLatitude(), city.getLongitude());
 //            t.setText(GetData.getTemp(city.getLatitude(), city.getLongitude()));
             t.setVisible(true);
-            Tile tile = TileBuilder.create().skinType(Tile.SkinType.COLOR)
+            Tile tile = TileBuilder.create().skinType(Tile.SkinType.IMAGE)
                   .prefSize(300, 150)
-                  .title("Fire Smoke")
-                  .text("CPU temp")
-                  .unit("\u00b0C")
+                  .text(GetData.getConditionName(cityJson))
                   .threshold(20) // triggers the fire and smoke effect
                   .decimals(2)
-                    .activeColor(Color.RED)
-                  .animated(true)
+                  .animated(false)
                   .build();
-            tile.setImage(new Image("https://cdn.weatherapi.com/weather/64x64/day/116.png"));
-//            tile.setValue(Double.parseDouble(GetData.getTemp(city.getLatitude(), city.getLongitude())));
+
+//            GetData.getConditionIcon(cityJson);
+            Image image = new Image("https:"+GetData.getConditionIcon(cityJson), 300, 150, true, false);
+            tile.setImage(image);
+            tile.setValue(3.2);
+
             tile.setValue(22.02);
-            Tile tile1 = TileBuilder.create().skinType(Tile.SkinType.COLOR)
+            Tile tile1 = TileBuilder.create().skinType(Tile.SkinType.FLUID)
                     .prefSize(200, 150)
-                    .title("Color (Sections)")
-                    .description("CPU temp")
-                    .text("Text")
+                    .title("Humidity: "+GetData.getHumidity(cityJson))
+                    .text(GetData.getConditionName(cityJson))
                     .unit("\u00b0C")
                     .animated(true)
                     .leftValue(3.5)
                     .decimals(2)
                     .build();
-//            tile1.setValue(Double.parseDouble(GetData.getTemp(city.getLatitude(), city.getLongitude())));
+            tile1.setValue(GetData.getTemp_c(cityJson));
             Button b  = new Button(city.getNameInEnglish());
             VBox vb = new VBox();
-            vb.getChildren().add(tile1);
             vb.getChildren().add(tile);
+            vb.getChildren().add(tile1);
             vb.getChildren().add(b);
 
             gridPane.add(vb, setRowIndex(), colIndex, 1, 1);
@@ -104,15 +108,11 @@ public class HelloApplication extends Application {
 //            gridPane.add(new Button("text"), setRowIndex(), colIndex, 1, 1);
 //
 //        }
+//        6b71275997ab41c3bc0122144232112
 
         // Create a ScrollPane and set the content to the FlowPane
         ScrollPane scrollPane = new ScrollPane(gridPane);
-
-        // Create the Scene
-        Scene scene = new Scene(scrollPane, 500, 500);
-
-        // Set up the Stage
-        primaryStage.setTitle("Scrollable FlowPane Example");
+        Scene scene = new Scene(scrollPane, 620, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

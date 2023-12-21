@@ -15,15 +15,17 @@ import java.util.List;
 
 public class GetData {
 
-    public static String getTemp(double latitude, double longitude) {
-
-        String apiUrl = "https://api.open-meteo.com/v1/forecast?current=temperature_2m&latitude=" + latitude + "&longitude=" + longitude;
+    public static JsonNode getJson(double latitude, double longitude) {
+//         String str= "http://api.weatherapi.com/v1/current.json";
+//        String apiUrl = "https://api.open-meteo.com/v1/forecast?current=temperature_2m&latitude=" + latitude + "&longitude=" + longitude;
+        StringBuilder strB = new StringBuilder("http://api.weatherapi.com/v1/current.json"+"?key=6b71275997ab41c3bc0122144232112&q="+latitude+"," +longitude +"&aqi=no");
+                String apiUrl = strB.toString();
         try {
             String jsonResponse = makeHttpRequest(apiUrl);
 
             JsonNode jsonNode = parseJsonResponse(jsonResponse);
 
-            return handleWeatherData(jsonNode);
+            return jsonNode;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -55,10 +57,17 @@ public class GetData {
         return mapper.readTree(jsonResponse);
     }
 
-    private static String handleWeatherData(JsonNode jsonNode) {
-
-        return jsonNode.at("/current/temperature_2m").asText();
-//        System.out.println("Current Temperature: " + temperature + "°C");
+    public static Double getTemp_c(JsonNode jsonNode) {
+        return jsonNode.at("/current/temp_c").asDouble();
+    }
+    public static Double getHumidity(JsonNode jsonNode) {
+        return jsonNode.at("/current/humidity").asDouble();
+    }
+    public static String getConditionName(JsonNode jsonNode) {
+        return jsonNode.at("/current/condition/text").asText();
+    }
+    public static String getConditionIcon(JsonNode jsonNode) {
+         return jsonNode.at("/current/condition/icon").asText();
     }
 }
 
