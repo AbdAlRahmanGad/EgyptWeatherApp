@@ -1,22 +1,17 @@
 package com.example.weatherappgui;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.lang.module.FindException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GetData {
-
+/** https://www.weatherapi.com/api-explorer.aspx#current */
     public static JsonNode getJson(double latitude, double longitude) {
-//         String str= "http://api.weatherapi.com/v1/current.json";
 //        String apiUrl = "https://api.open-meteo.com/v1/forecast?current=temperature_2m&latitude=" + latitude + "&longitude=" + longitude;
         StringBuilder strB = new StringBuilder("http://api.weatherapi.com/v1/current.json"+"?key=6b71275997ab41c3bc0122144232112&q="+latitude+"," +longitude +"&aqi=no");
                 String apiUrl = strB.toString();
@@ -32,7 +27,6 @@ public class GetData {
         }
         return null;
     }
-
 
     private static String makeHttpRequest(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
@@ -60,14 +54,17 @@ public class GetData {
     public static Double getTemp_c(JsonNode jsonNode) {
         return jsonNode.at("/current/temp_c").asDouble();
     }
-    public static Double getHumidity(JsonNode jsonNode) {
-        return jsonNode.at("/current/humidity").asDouble();
+    public static int getHumidity(JsonNode jsonNode) {
+        return jsonNode.at("/current/humidity").asInt();
     }
     public static String getConditionName(JsonNode jsonNode) {
         return jsonNode.at("/current/condition/text").asText();
     }
     public static String getConditionIcon(JsonNode jsonNode) {
          return jsonNode.at("/current/condition/icon").asText();
+    }
+    public static Double getWindKph(JsonNode jsonNode) {
+        return jsonNode.at("/current/wind_kph").asDouble();
     }
 }
 
