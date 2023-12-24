@@ -5,6 +5,7 @@ import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -41,11 +42,14 @@ import java.util.concurrent.TimeUnit;
  *
  *     design pattern
  *
+ *
  */
 
 ///// lazy uploud
 
-
+    ///// to be added
+     /// lazy upload main frame;
+    ///
 
 
 public class HelloApplication extends Application {
@@ -82,10 +86,11 @@ public class HelloApplication extends Application {
         exec.scheduleAtFixedRate(() -> {
             updateDataCity(cities);
             System.out.println(new Date());
-        }, 30, 60, TimeUnit.SECONDS);
+        }, 5, 60, TimeUnit.SECONDS);
 
         mainRoot = new ScrollPane(gridPane);
         primaryscene = new Scene(mainRoot, 620, 700);
+        primaryStage.setFullScreen(true);
         primaryStage.setScene(primaryscene);
         primaryStage.show();
     }
@@ -96,25 +101,32 @@ public class HelloApplication extends Application {
 
             JsonNode cityJson = GetData.getJson(cities.get(i).getLatitude(), cities.get(i).getLongitude());
 
-            imageTiles.get(i).setText(GetData.getConditionName(cityJson));
 
             Image image = new Image("https:" + GetData.getConditionIcon(cityJson), 300, 150, true, false);
-            imageTiles.get(i).setImage(image);
 
-
-            dataTiles.get(i).setTitle("Humidity: " + GetData.getHumidity(cityJson) + "%");
-            dataTiles.get(i).setText("Wind " + GetData.getWindKph(cityJson) + " km/h");
-            dataTiles.get(i).setValue(GetData.getTemp_c(cityJson));
+            final int finalI = i;
+            new Thread(() -> {
+                Platform.runLater(() ->{
+                    imageTiles.get(finalI).setText(GetData.getConditionName(cityJson));
+                    imageTiles.get(finalI).setImage(image);
+                    dataTiles.get(finalI).setTitle("Humidity: " + GetData.getHumidity(cityJson) + "%");
+                    dataTiles.get(finalI).setText("Wind " + GetData.getWindKph(cityJson) + " km/h");
+                    dataTiles.get(finalI).setValue(GetData.getTemp_c(cityJson));
+                }); // Update on JavaFX Application Thread
+            }).start();
+//            imageTiles.get(i).setText(GetData.getConditionName(cityJson));
+//            imageTiles.get(i).setImage(image);
+//            dataTiles.get(i).setTitle("Humidity: " + GetData.getHumidity(cityJson) + "%");
+//            dataTiles.get(i).setText("Wind " + GetData.getWindKph(cityJson) + " km/h");
+//            dataTiles.get(i).setValue(GetData.getTemp_c(cityJson));
 //            dataTiles.get(i).trig
 //            dataTiles.get(i).fireTileEvt(new TileEvt.DATA(){
-//
 //            });
         }
     }
 
         private void initializeScene(List<EgyptCity> cities, Stage primaryStage) {
         for (EgyptCity city : cities) {
-//            stages.add(new Stage());
             Text t = new Text();
             JsonNode cityJson = GetData.getJson(city.getLatitude(), city.getLongitude());
             t.setVisible(true);
@@ -180,7 +192,7 @@ public class HelloApplication extends Application {
                     .title("Humidity: " + GetData.getHumidity(cityJson) + "%")
                     .text("Wind " + GetData.getWindKph(cityJson) + " km/h")
                     .unit("\u00b0C")
-                    .animated(true)
+                    .animated(false)
                     .decimals(2)
                     .build();
             dataTile2.setValue(GetData.getTemp_c(cityJson));
@@ -197,9 +209,18 @@ public class HelloApplication extends Application {
             dataTiles.add(dataTile2);
             int finalNewRowIndex = newRowIndex;
             int finalNewColIndex = newColIndex;
+
             new Thread(() -> {
-                Platform.runLater(() -> gridPane2.add(vb, finalNewRowIndex, finalNewColIndex, 1, 1));// Update on JavaFX Application Thread
+                Platform.runLater(() ->{
+                    gridPane2.add(vb, finalNewRowIndex, finalNewColIndex, 1, 1);
+                }); // Update on JavaFX Application Thread
             }).start();
+
+            ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+            exec.scheduleAtFixedRate(() -> {
+                updateOneCity(minyCity, imageTile2,dataTile2);
+                System.out.println(new Date());
+            }, 0, 60, TimeUnit.SECONDS);
         }
     }
     public ScrollPane makeNewScene(List<CityData> citiesAndVillages, String cityName){
@@ -212,45 +233,38 @@ public class HelloApplication extends Application {
             gridPane2.setHgap(10);
             gridPane2.setVgap(10);
             Button returnButton = new Button("Return");
-            returnButton.setPrefWidth(20);
-            returnButton.setOnAction(actionEvent -> {
-                primaryscene.setRoot(mainRoot);
-            });
+            returnButton.setMinHeight(50);
+            returnButton.setMinWidth(100);
+
             gridPane2.add(returnButton, newRowIndex, 0, 3, 1);
-//            newColIndex++;
             cities = GetCitiesNames.getCities();
-//            ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
-//            exec.scheduleAtFixedRate(() -> {
-//                System.out.println("lalal");
-//                func(citiesAndVillages, newRowIndex, newColIndex, gridPane2);
-//            }, 2, 100000, TimeUnit.SECONDS);
-
-//            exec.
-//                Runnable task = () -> {
-
-
-//                };
-//                Thread thread = new Thread(task);
-//                thread.setDaemon(true);
-//                thread.start();
-
             ScrollPane scrollPane2 = new ScrollPane(gridPane2);
-//            scrollPane2.re
-//            scrollPane2.getContent().get
             rootMap.put(cityName, scrollPane2);
-//            public void handle(Event arg0) {
+
+               Thread t1 = new Thread(() -> {
+                    addElementByElement(citiesAndVillages, newRowIndex, newColIndex, gridPane2);
+                });
+               t1.start();
+
+//                when thread finish
+//                    begin
+//                    t1.en
+            //// JOIN
+            ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+            exec.scheduleAtFixedRate(() -> {
+                updateDataMinyCity(citiesAndVillages,imageTiles,dataTiles);
+                System.out.println(new Date());
+            }, 60, 180, TimeUnit.SECONDS);
+            returnButton.setOnAction(actionEvent -> {
+//                updateDataCity(cities);
                 new Thread(() -> {
-//                    for(int i=0; i<10; i++) {
-//                        try {
-//                            Thread.sleep(1000); // Wait for 1 sec before updating the color
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                        int finalI = i;
-                    addElementByElement(citiesAndVillages, newRowIndex, newColIndex, gridPane2);// Update on JavaFX Application Thread
-//                    }
+//                    Platform.runLater(() ->{
+                        updateDataCity(cities);
+//                    }); // Update on JavaFX Application Thread
                 }).start();
-//            return scrollPane2;
+                primaryscene.setRoot(mainRoot);
+                exec.shutdown();
+            });
 
 //            Platform.runLater(new Runnable() {
 //                @Override
@@ -269,11 +283,7 @@ public class HelloApplication extends Application {
 //                stageMap.get(cityName).show();
 
 //            });
-//            ScheduledExecutorService exec = Executors.newScheduledThreadPool(20);
-//            exec.scheduleAtFixedRate(() -> {
-//                updateDataMinyCity(citiesAndVillages,imageTiles,dataTiles);
-//                System.out.println(new Date());
-//            }, 30, 180, TimeUnit.SECONDS);
+
 //            stageMap.get(cityName).setOnCloseRequest(windowEvent -> {
 //                exec.shutdown();
 
@@ -289,10 +299,34 @@ public class HelloApplication extends Application {
 //                    Thread.currentThread().interrupt();
 //                }
 //            });
-        }
+        }else {
+//            for (CityData minyCity : citiesAndVillages) {
+//                new Thread(() -> {
+//                    Platform.runLater(() ->{
+//                        updateOneCity(minyCity, imageTile2,dataTile2);
+//                    }); // Update on JavaFX Application Thread
+//                }).start();
+//            }
+            }
+
         return  rootMap.get(cityName);
     }
+    private void updateOneCity(CityData minyCity,
+                                    Tile imageTiles2,
+                                    Tile dataTiles2) {
 
+            JsonNode cityJson = GetData.getJson(minyCity.getLatitude(), minyCity.getLongitude());
+
+            imageTiles2.setText(GetData.getConditionName(cityJson));
+
+            Image image = new Image("https:" + GetData.getConditionIcon(cityJson), 300, 150, true, false);
+            imageTiles2.setImage(image);
+
+            dataTiles2.setTitle("Humidity: " + GetData.getHumidity(cityJson) + "%");
+            dataTiles2.setText("Wind " + GetData.getWindKph(cityJson) + " km/h");
+            dataTiles2.setValue(GetData.getTemp_c(cityJson));
+
+    }
     private void updateDataMinyCity(List<CityData> minyCities,
     List<Tile> imageTiles2,
     List<Tile> dataTiles2) {
