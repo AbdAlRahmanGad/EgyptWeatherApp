@@ -60,7 +60,6 @@ public class EgyptCity {
     @JsonProperty("CitiesAndVillages")
     private List<CityData> citiesAndVillages;
 
-    // Getter and setter methods
 }
 
 class CityData {
@@ -108,5 +107,4 @@ class CityData {
     @JsonProperty("NameInEnglish")
     private String nameInEnglish;
 
-    // Getter and setter methods
 }
