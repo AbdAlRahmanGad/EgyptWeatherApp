@@ -8,4 +8,10 @@ The Egypt Weather App provides the current weather for locations across Egypt
 - Visual Icons: Quickly understand weather conditions with intuitive visual icons.
 ## Demo
 https://github.com/AbdAlRahmanGad/EgyptWeatherApp/assets/89566409/bc86e506-40f5-44da-8900-8ff69eba0f33
+## Resources
+- [TilesFx](https://github.com/HanSolo/tilesfx)
+- [Egypt Governates Json](https://github.com/muhammed-elsheikh/egy_governorates)
+- [Weather Api](https://www.weatherapi.com)
+
+
 
