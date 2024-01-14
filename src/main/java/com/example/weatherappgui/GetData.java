@@ -10,10 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class GetData {
-/** https://www.weatherapi.com/api-explorer.aspx#current */
     public static JsonNode getJson(double latitude, double longitude) {
-//        String apiUrl = "https://api.open-meteo.com/v1/forecast?current=temperature_2m&latitude=" + latitude + "&longitude=" + longitude;
-        StringBuilder strB = new StringBuilder("http://api.weatherapi.com/v1/current.json"+"?key=6b71275997ab41c3bc0122144232112&q="+latitude+"," +longitude +"&aqi=no");
+        StringBuilder strB = new StringBuilder("http://api.weatherapi.com/v1/current.json"+"?key=638a603c359d4dda80d25445241401&q="+latitude+"," +longitude +"&aqi=no");
                 String apiUrl = strB.toString();
         try {
             String jsonResponse = makeHttpRequest(apiUrl);
